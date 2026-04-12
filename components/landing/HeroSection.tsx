@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Clock, PlayCircle } from 'lucide-react';
@@ -72,20 +72,80 @@ function ImageCapsule({ src, fallback, alt }: { src: string; fallback: string; a
   );
 }
 
-// ─── Pill Navbar ──────────────────────────────────────────────────────────────
+// ─── Sticky Navbar (fixed on scroll) ─────────────────────────────────────────
+function StickyNavbar() {
+  const [visible, setVisible] = useState(false);
+  const navLinks = ['Home', 'Features', 'Impact', 'For NGOs'];
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 80);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: 20,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 999,
+        pointerEvents: visible ? 'all' : 'none',
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 0.3s ease',
+      }}
+    >
+      <nav
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 0,
+          background: 'rgba(8,8,8,0.75)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: 999,
+          padding: '10px 20px',
+          whiteSpace: 'nowrap',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+        }}
+      >
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 8, textDecoration: 'none', marginRight: 32 }}>
+          <span style={{ color: 'white', fontSize: 14, lineHeight: 1 }}>✦</span>
+          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#fff', letterSpacing: '-0.01em' }}>
+            VolunteerIQ
+          </span>
+        </Link>
+        <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+          {navLinks.map(link => (
+            <NavLink key={link} href="#" label={link} />
+          ))}
+        </div>
+      </nav>
+    </div>
+  );
+}
+
+// ─── Pill Navbar (inside hero, absolute) ─────────────────────────────────────
 function PillNavbar() {
   const navLinks = ['Home', 'Features', 'Impact', 'For NGOs'];
 
   return (
+    /* Centering wrapper — separate from Framer Motion so transform: translateX(-50%)
+       is never clobbered by the y-animation matrix */
+    <div style={{
+      position: 'absolute',
+      top: 24,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      zIndex: 50,
+    }}>
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
       style={{
-        position: 'absolute',
-        top: 24,
-        left: '50%',
-        transform: 'translateX(-50%)',
         display: 'inline-flex',
         alignItems: 'center',
         gap: 0,
@@ -95,7 +155,6 @@ function PillNavbar() {
         border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: 999,
         padding: '10px 20px',
-        zIndex: 50,
         whiteSpace: 'nowrap',
         boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
       }}
@@ -121,6 +180,7 @@ function PillNavbar() {
         ))}
       </div>
     </motion.nav>
+    </div>
   );
 }
 
@@ -182,17 +242,21 @@ function PillButton({ href, icon, label }: { href: string; icon: React.ReactNode
 // ─── Main Hero Section ────────────────────────────────────────────────────────
 export default function HeroSection() {
   return (
-    <section
-      style={{
-        minHeight: '100vh',
-        position: 'relative',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#080808',
-      }}
+    <>
+      {/* Sticky navbar — fades in after scrolling past hero */}
+      <StickyNavbar />
+
+      <section
+        style={{
+          minHeight: '100vh',
+          position: 'relative',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#080808',
+        }}
     >
       {/* ── Dot grid overlay ────────────────────────────────────────────── */}
       <div
@@ -367,10 +431,7 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
-      {/* ── Space Grotesk font import via style tag ──────────────────────── */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
-      `}</style>
     </section>
+    </>
   );
 }
