@@ -8,7 +8,7 @@ import { Issue, getCategoryEmoji, URGENCY_COLORS } from '@/lib/types';
 
 // Prevent Leaflet default icon from trying to load missing PNGs in Next.js
 function fixLeafletIcons() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line -- Leaflet icon hack requires `any` casting
   delete (L.Icon.Default.prototype as any)._getIconUrl;
   L.Icon.Default.mergeOptions({
     iconUrl:       '/leaflet/marker-icon.png',

@@ -1285,7 +1285,7 @@ function FooterLink({ label, href = '#' }: { label: string; href?: string }) {
   );
 }
 
-function SocialIcon({ Icon }: { Icon: React.ComponentType<{ size: number }> }) {
+function SocialIcon({ Icon }: { Icon: React.ForwardRefExoticComponent<any> }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
