@@ -11,6 +11,18 @@ const PUBLIC = ['/login', '/signup'];
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Root route: show landing page for guests, redirect logged-in users to dashboard
+  if (pathname === '/') {
+    const uid = request.cookies.get('viq_uid')?.value;
+    const role = request.cookies.get('viq_role')?.value;
+    if (uid && role) {
+      return NextResponse.redirect(
+        new URL(role === 'coordinator' ? '/dashboard' : '/volunteer', request.url)
+      );
+    }
+    return NextResponse.next(); // Show landing page
+  }
+
   // Always allow public routes and internal Next.js/_next paths
   if (PUBLIC.some((p) => pathname.startsWith(p))) return NextResponse.next();
 
@@ -39,14 +51,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths EXCEPT:
-     * - _next/static (static files)
-     * - _next/image  (image optimization)
-     * - favicon.svg / favicon.ico
-     * - public/ assets (leaflet, images, etc.)
-     * - api routes
-     */
     '/((?!_next/static|_next/image|favicon|leaflet|api|.*\\.png|.*\\.svg|.*\\.ico).*)',
   ],
 };

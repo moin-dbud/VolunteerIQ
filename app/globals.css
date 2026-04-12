@@ -617,3 +617,42 @@ body {
   opacity: 0.92;
 }
 
+/* ============================================================
+   LAYOUT SHELL — referenced in app/layout.tsx
+   ============================================================ */
+
+/* Min-width warning overlay for screens < 1024px (app pages only) */
+.min-width-message {
+  display: none;
+}
+
+/* App content wrapper */
+.app-content {
+  min-height: 100vh;
+}
+
+/* Show the min-width message on very small viewports ONLY when
+   inside the real app shell (AppShell adds data-app attribute) */
+@media (max-width: 1023px) {
+  body[data-app='true'] .min-width-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 24px;
+    text-align: center;
+    background: var(--bg-base);
+    color: var(--text-secondary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+  }
+
+  body[data-app='true'] .app-content {
+    display: none;
+  }
+}
