@@ -3,444 +3,455 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, User, Mail, ChevronDown, Lock, Zap } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, ChevronDown, Lock, ArrowRight, Sparkles, Map, Zap } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import PhoneModal from '@/components/PhoneModal';
+import { motion } from 'framer-motion';
 
+// ─── Diamond decorators ───────────────────────────────────────────────────────
+const DIAMONDS = [
+  { top: '6%',  left: '6%',   size: 9,  opacity: 0.14 },
+  { top: '14%', right: '8%',  size: 7,  opacity: 0.10 },
+  { top: '50%', left: '3%',   size: 11, opacity: 0.09 },
+  { top: '72%', right: '5%',  size: 8,  opacity: 0.12 },
+  { bottom: '10%', left: '42%', size: 6, opacity: 0.08 },
+  { top: '36%', right: '11%', size: 6,  opacity: 0.10 },
+  { top: '85%', left: '15%',  size: 7,  opacity: 0.09 },
+];
+
+function Diamond({ d }: { d: typeof DIAMONDS[0] }) {
+  const style: React.CSSProperties = {
+    position: 'absolute',
+    width: d.size, height: d.size,
+    transform: 'rotate(45deg)',
+    background: `rgba(255,255,255,${d.opacity})`,
+    ...(d.top    ? { top:    d.top    } : {}),
+    ...(d.bottom ? { bottom: (d as any).bottom } : {}),
+    ...(d.left   ? { left:   d.left   } : {}),
+    ...(d.right  ? { right:  d.right  } : {}),
+    pointerEvents: 'none',
+  };
+  return <div style={style} />;
+}
+
+// ─── Shared PBInput ───────────────────────────────────────────────────────────
+function PBInput({
+  type, placeholder, value, onChange, icon: Icon, rightSlot, error,
+}: {
+  type: string; placeholder: string; value: string;
+  onChange: (v: string) => void; icon: React.ComponentType<any>;
+  rightSlot?: React.ReactNode; error?: string;
+}) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div>
+      <div style={{ position: 'relative' }}>
+        <Icon
+          size={14}
+          style={{
+            position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
+            color: focused ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.25)',
+            transition: 'color 0.2s',
+          }}
+        />
+        <input
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          style={{
+            width: '100%', boxSizing: 'border-box',
+            padding: '12px 14px 12px 40px',
+            background: focused ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)',
+            border: `1px solid ${error ? 'rgba(239,68,68,0.5)' : focused ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)'}`,
+            borderRadius: 10,
+            color: '#fff',
+            fontSize: 14,
+            fontFamily: "'Space Grotesk', sans-serif",
+            outline: 'none',
+            transition: 'all 0.2s ease',
+            paddingRight: rightSlot ? 44 : 14,
+          }}
+        />
+        {rightSlot && (
+          <div style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)' }}>
+            {rightSlot}
+          </div>
+        )}
+      </div>
+      {error && (
+        <p style={{ fontSize: 11, color: '#ef4444', marginTop: 5, fontFamily: "'Space Grotesk', sans-serif" }}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Pixel Bloom Select ───────────────────────────────────────────────────────
+function PBSelect({
+  value, onChange, options, placeholder, error,
+}: {
+  value: string; onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  placeholder: string; error?: string;
+}) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div>
+      <div style={{ position: 'relative' }}>
+        <select
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          style={{
+            width: '100%', boxSizing: 'border-box',
+            padding: '12px 40px 12px 14px',
+            background: focused ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)',
+            border: `1px solid ${error ? 'rgba(239,68,68,0.5)' : focused ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)'}`,
+            borderRadius: 10,
+            color: value ? '#fff' : 'rgba(255,255,255,0.3)',
+            fontSize: 14,
+            fontFamily: "'Space Grotesk', sans-serif",
+            outline: 'none',
+            appearance: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <option value="" disabled style={{ background: '#111', color: 'rgba(255,255,255,0.4)' }}>{placeholder}</option>
+          {options.map(o => (
+            <option key={o.value} value={o.value} style={{ background: '#111', color: '#fff' }}>{o.label}</option>
+          ))}
+        </select>
+        <ChevronDown size={14} style={{
+          position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
+          color: 'rgba(255,255,255,0.25)', pointerEvents: 'none',
+        }} />
+      </div>
+      {error && (
+        <p style={{ fontSize: 11, color: '#ef4444', marginTop: 5, fontFamily: "'Space Grotesk', sans-serif" }}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Mini feature card ───────────────────────────────────────────────────────
+function FeatureCard({ icon: Icon, title, desc }: { icon: React.ComponentType<any>; title: string; desc: string }) {
+  return (
+    <div style={{
+      background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 14, padding: '20px',
+    }}>
+      <div style={{
+        width: 36, height: 36, borderRadius: 10,
+        background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: 14,
+      }}>
+        <Icon size={17} style={{ color: 'rgba(255,255,255,0.6)' }} />
+      </div>
+      <p style={{ fontSize: 13, fontWeight: 700, color: '#fff', margin: '0 0 6px' }}>{title}</p>
+      <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, margin: 0 }}>{desc}</p>
+    </div>
+  );
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 export default function SignupPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
+  const [name, setName]         = useState('');
+  const [email, setEmail]       = useState('');
+  const [role, setRole]         = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
+  const [showPw, setShowPw]     = useState(false);
+  const [errors, setErrors]     = useState<Record<string, string>>({});
+  const [loading, setLoading]   = useState(false);
   const { signUp } = useAuth();
   const router = useRouter();
 
-  // Phone modal state
   const [showPhoneModal, setShowPhoneModal] = useState(false);
-  const [pendingUid, setPendingUid] = useState('');
+  const [pendingUid, setPendingUid]         = useState('');
   const [pendingRedirect, setPendingRedirect] = useState('');
 
   const validate = () => {
     const e: Record<string, string> = {};
     if (!name.trim()) e.name = 'Full name is required.';
-    if (!email.trim()) e.email = 'Email address is required.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'Please enter a valid email address.';
+    if (!email.trim()) e.email = 'Email is required.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'Enter a valid email address.';
     if (!role) e.role = 'Please select your role.';
     if (!password) e.password = 'Password is required.';
-    else if (password.length < 8) e.password = 'Password must be at least 8 characters.';
+    else if (password.length < 8) e.password = 'Must be at least 8 characters.';
     return e;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const validationErrors = validate();
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
+    const v = validate(); setErrors(v);
+    if (Object.keys(v).length > 0) return;
     setLoading(true);
     try {
       const { uid, redirectPath } = await signUp(email, password, name, role);
-      // Show phone modal BEFORE redirecting
-      setPendingUid(uid);
-      setPendingRedirect(redirectPath);
-      setShowPhoneModal(true);
+      setPendingUid(uid); setPendingRedirect(redirectPath); setShowPhoneModal(true);
     } catch (err: any) {
       setErrors({ form: err.message || 'Failed to create account.' });
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const handlePhoneSave = async (phone: string) => {
     if (pendingUid) {
-      try {
-        await updateDoc(doc(db, 'users', pendingUid), { phone });
-      } catch (err) {
-        console.error('[PhoneModal] Failed to save phone:', err);
-      }
+      try { await updateDoc(doc(db, 'users', pendingUid), { phone }); }
+      catch (err) { console.error('[PhoneModal] Failed to save phone:', err); }
     }
     setShowPhoneModal(false);
     router.push(pendingRedirect || '/');
   };
+  const handlePhoneSkip = () => { setShowPhoneModal(false); router.push(pendingRedirect || '/'); };
 
-  const handlePhoneSkip = () => {
-    setShowPhoneModal(false);
-    router.push(pendingRedirect || '/');
-  };
+  const featureCards = [
+    { icon: Sparkles, title: 'Gemini AI Engine',    desc: 'Instant triage and smart volunteer matching powered by Gemini.' },
+    { icon: Zap,       title: 'Real-time Dashboard', desc: 'Firestore listeners push every update live — no refresh ever needed.' },
+    { icon: Map,       title: 'Live Map Command',    desc: 'Pin-coded incident map with category filters and instant dispatch.' },
+  ];
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--bg-base)' }}>
-      {/* Left Panel */}
-      <div
-        style={{
-          width: '55%',
-          background: 'var(--bg-base)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '48px 64px',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Background gradient mesh */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'radial-gradient(ellipse at 20% 50%, rgba(147,51,234,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(192,38,211,0.06) 0%, transparent 50%)',
-            pointerEvents: 'none',
-          }}
-        />
+    <div style={{
+      minHeight: '100vh', display: 'flex',
+      background: '#080808',
+      backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)',
+      backgroundSize: '32px 32px',
+      backgroundAttachment: 'fixed',
+      fontFamily: "'Space Grotesk', sans-serif",
+      position: 'relative',
+    }}>
+      {/* Diamond decorators */}
+      {DIAMONDS.map((d, i) => <Diamond key={i} d={d} />)}
 
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '480px' }}>
-          {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '64px' }}>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                background: 'var(--accent-gradient)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Zap size={16} color="white" />
-            </div>
-            <span
-              style={{
-                fontFamily: 'Space Grotesk, sans-serif',
-                fontSize: '18px',
-                fontWeight: 700,
-                color: 'var(--text-primary)',
-              }}
-            >
+      {/* Floating pill navbar */}
+      <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 100 }}>
+        <Link href="/" style={{ textDecoration: 'none' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 10,
+            background: 'rgba(8,8,8,0.75)', backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            borderRadius: 999, padding: '10px 20px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+          }}>
+            <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>✦</span>
+            <span style={{ color: '#fff', fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>
               VolunteerIQ
             </span>
           </div>
-
-          {/* Headline */}
-          <h1
-            style={{
-              fontFamily: 'Space Grotesk, sans-serif',
-              fontSize: '48px',
-              fontWeight: 700,
-              lineHeight: 1.15,
-              color: 'var(--text-primary)',
-              marginBottom: '20px',
-            }}
-          >
-            Join the{' '}
-            <span style={{ color: 'var(--accent-secondary)' }}>Pulse</span> of Community Impact
-          </h1>
-
-          <p
-            style={{
-              fontSize: '16px',
-              color: 'var(--text-secondary)',
-              lineHeight: 1.7,
-              marginBottom: '48px',
-            }}
-          >
-            Unite with a global network of changemakers. Our AI-driven command center helps you
-            deploy resources exactly where they&apos;re needed most.
-          </p>
-
-          {/* Feature Pills */}
-          <div style={{ display: 'flex', gap: '16px' }}>
-            {[
-              {
-                icon: '⚡',
-                label: 'REAL-TIME',
-                desc: 'Instant response protocols for local and global crises.',
-              },
-              {
-                icon: '🔮',
-                label: 'AI INSIGHTS',
-                desc: 'Predictive modeling for community volunteer needs.',
-              },
-            ].map(({ icon, label, desc }) => (
-              <div
-                key={label}
-                style={{
-                  flex: 1,
-                  border: '1px solid var(--border-default)',
-                  background: 'rgba(255,255,255,0.03)',
-                  borderRadius: '12px',
-                  padding: '16px 20px',
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    marginBottom: '6px',
-                  }}
-                >
-                  <span style={{ fontSize: '14px' }}>{icon}</span>
-                  <span
-                    style={{
-                      fontFamily: 'DM Sans, sans-serif',
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.1em',
-                      color: 'var(--accent-primary)',
-                    }}
-                  >
-                    {label}
-                  </span>
-                </div>
-                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                  {desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+        </Link>
       </div>
 
-      {/* Right Panel — Signup Form */}
-      <div
+      {/* Left: form panel */}
+      <motion.div
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          width: '45%',
-          background: 'var(--bg-surface)',
-          borderLeft: '1px solid var(--border-default)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '48px',
-          minHeight: '100vh',
+          width: '52%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '120px 40px 80px 80px',
         }}
       >
-        <div style={{ maxWidth: '380px', width: '100%', margin: '0 auto' }}>
-          <h2
-            style={{
-              fontFamily: 'Space Grotesk, sans-serif',
-              fontSize: '32px',
-              fontWeight: 700,
-              color: 'var(--text-primary)',
-              marginBottom: '8px',
-            }}
-          >
-            Signup
-          </h2>
-          <p
-            style={{
-              fontSize: '14px',
-              color: 'var(--text-secondary)',
-              marginBottom: '32px',
-            }}
-          >
-            Create your command center account to get started.
-          </p>
+        <div style={{
+          width: '100%', maxWidth: 460,
+          background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.09)',
+          borderRadius: 20, padding: '40px',
+          backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)',
+        }}>
+          {/* Header */}
+          <div style={{ marginBottom: 28 }}>
+            <h2 style={{ fontSize: 26, fontWeight: 700, color: '#fff', margin: '0 0 8px' }}>
+              Create your account
+            </h2>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+              Join the VolunteerIQ command center in under a minute.
+            </p>
+          </div>
 
+          {/* Form error */}
           {errors.form && (
-            <div
-              style={{
-                background: 'rgba(239,68,68,0.1)',
-                border: '1px solid rgba(239,68,68,0.3)',
-                borderRadius: '8px',
-                padding: '12px',
-                fontSize: '13px',
-                color: 'var(--urgency-high)',
-                marginBottom: '16px',
-              }}
-            >
+            <div style={{
+              background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)',
+              borderRadius: 10, padding: '12px 14px',
+              fontSize: 13, color: '#ef4444', marginBottom: 20,
+            }}>
               {errors.form}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {/* Full Name */}
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+            {/* Full name */}
             <div>
-              <label className="label-muted" style={{ display: 'block', marginBottom: '6px' }}>
+              <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
                 FULL NAME
-              </label>
-              <div style={{ position: 'relative' }}>
-                <User
-                  size={15}
-                  color="var(--text-muted)"
-                  style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
-                />
-                <input
-                  type="text"
-                  className="input-field input-with-icon"
-                  placeholder="Enter your full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              {errors.name && (
-                <p style={{ fontSize: '12px', color: 'var(--urgency-high)', marginTop: '4px' }}>
-                  {errors.name}
-                </p>
-              )}
+              </p>
+              <PBInput type="text" placeholder="Enter your full name" value={name} onChange={setName} icon={User} error={errors.name} />
             </div>
 
             {/* Email */}
             <div>
-              <label className="label-muted" style={{ display: 'block', marginBottom: '6px' }}>
+              <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
                 EMAIL ADDRESS
-              </label>
-              <div style={{ position: 'relative' }}>
-                <Mail
-                  size={15}
-                  color="var(--text-muted)"
-                  style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
-                />
-                <input
-                  type="email"
-                  className="input-field input-with-icon"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              {errors.email && (
-                <p style={{ fontSize: '12px', color: 'var(--urgency-high)', marginTop: '4px' }}>
-                  {errors.email}
-                </p>
-              )}
+              </p>
+              <PBInput type="email" placeholder="name@example.com" value={email} onChange={setEmail} icon={Mail} error={errors.email} />
             </div>
 
-            {/* Primary Role */}
+            {/* Role */}
             <div>
-              <label className="label-muted" style={{ display: 'block', marginBottom: '6px' }}>
+              <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
                 PRIMARY ROLE
-              </label>
-              <div style={{ position: 'relative' }}>
-                <select
-                  className="select-field"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  style={{ color: role ? 'var(--text-primary)' : 'var(--text-muted)' }}
-                >
-                  <option value="" disabled>
-                    Select your role
-                  </option>
-                  <option value="coordinator">NGO Coordinator</option>
-                  <option value="volunteer">Volunteer</option>
-                </select>
-                <ChevronDown
-                  size={15}
-                  color="var(--text-muted)"
-                  style={{
-                    position: 'absolute',
-                    right: '12px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    pointerEvents: 'none',
-                  }}
-                />
-              </div>
-              {errors.role && (
-                <p style={{ fontSize: '12px', color: 'var(--urgency-high)', marginTop: '4px' }}>
-                  {errors.role}
-                </p>
-              )}
+              </p>
+              <PBSelect
+                value={role} onChange={setRole}
+                placeholder="Select your role"
+                options={[
+                  { value: 'coordinator', label: 'NGO Coordinator' },
+                  { value: 'volunteer',   label: 'Volunteer' },
+                ]}
+                error={errors.role}
+              />
             </div>
 
             {/* Password */}
             <div>
-              <label className="label-muted" style={{ display: 'block', marginBottom: '6px' }}>
+              <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
                 PASSWORD
-              </label>
-              <div style={{ position: 'relative' }}>
-                <Lock
-                  size={15}
-                  color="var(--text-muted)"
-                  style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }}
-                />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  className="input-field input-with-icon"
-                  placeholder="Create a strong password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={{ paddingRight: '44px' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    position: 'absolute',
-                    right: '12px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: 'var(--text-muted)',
-                    display: 'flex',
-                  }}
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-              {errors.password && (
-                <p style={{ fontSize: '12px', color: 'var(--urgency-high)', marginTop: '4px' }}>
-                  {errors.password}
-                </p>
-              )}
+              </p>
+              <PBInput
+                type={showPw ? 'text' : 'password'} placeholder="Create a strong password"
+                value={password} onChange={setPassword} icon={Lock} error={errors.password}
+                rightSlot={
+                  <button type="button" onClick={() => setShowPw(!showPw)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer',
+                      color: 'rgba(255,255,255,0.3)', display: 'flex', padding: 0 }}>
+                    {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                }
+              />
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
-              className="btn-gradient"
               disabled={loading}
-              style={{ marginTop: '8px' }}
+              style={{
+                marginTop: 4, padding: '13px',
+                borderRadius: 10,
+                border: '1px solid rgba(255,255,255,0.18)',
+                background: loading ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.07)',
+                color: loading ? 'rgba(255,255,255,0.4)' : '#fff',
+                fontSize: 15, fontWeight: 600,
+                fontFamily: "'Space Grotesk', sans-serif",
+                cursor: loading ? 'not-allowed' : 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={e => { if (!loading) { (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.1)'; (e.target as HTMLElement).style.borderColor = 'rgba(255,255,255,0.28)'; } }}
+              onMouseLeave={e => { if (!loading) { (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.07)'; (e.target as HTMLElement).style.borderColor = 'rgba(255,255,255,0.18)'; } }}
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
+              {loading ? 'Creating account…' : <>Create Account <ArrowRight size={15} /></>}
             </button>
           </form>
 
-          <p
-            style={{
-              textAlign: 'center',
-              fontSize: '14px',
-              color: 'var(--text-secondary)',
-              marginTop: '20px',
-            }}
-          >
+          <p style={{ textAlign: 'center', fontSize: 13, color: 'rgba(255,255,255,0.35)', marginTop: 24 }}>
             Already have an account?{' '}
-            <Link
-              href="/login"
-              style={{ color: 'var(--accent-primary)', fontWeight: 600, textDecoration: 'none' }}
-            >
-              Login
+            <Link href="/login" style={{ color: 'rgba(255,255,255,0.75)', fontWeight: 600, textDecoration: 'none' }}>
+              Sign In
             </Link>
           </p>
-
-          <p
-            style={{
-              textAlign: 'center',
-              fontSize: '10px',
-              color: 'var(--text-muted)',
-              marginTop: '24px',
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-            }}
-          >
-            BY JOINING, YOU AGREE TO OUR TERMS OF SERVICE &amp; PRIVACY POLICY
+          <p style={{
+            textAlign: 'center', fontSize: 10, color: 'rgba(255,255,255,0.18)',
+            marginTop: 16, letterSpacing: '0.05em', textTransform: 'uppercase',
+          }}>
+            By joining, you agree to our Terms &amp; Privacy Policy
           </p>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Phone number modal — shown immediately after account creation */}
-      <PhoneModal
-        isOpen={showPhoneModal}
-        onSave={handlePhoneSave}
-        onSkip={handlePhoneSkip}
-      />
+      {/* Right: brand panel */}
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        style={{
+          width: '48%', display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          padding: '120px 80px 80px 40px', position: 'relative',
+        }}
+      >
+        {/* Glow */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 70% 60% at 70% 50%, rgba(40,40,40,0.8) 0%, transparent 70%)',
+        }} />
+
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          {/* Badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(255,255,255,0.03)',
+            borderRadius: 999, padding: '6px 16px', marginBottom: 32,
+          }}>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11 }}>✦</span>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              Join the Network
+            </span>
+          </div>
+
+          <h1 style={{
+            fontSize: 'clamp(36px, 3.5vw, 48px)', fontWeight: 700,
+            color: '#fff', lineHeight: 1.15, margin: '0 0 20px',
+          }}>
+            Join the Pulse<br />of Community Impact.
+          </h1>
+
+          <p style={{
+            fontSize: 16, color: 'rgba(255,255,255,0.45)',
+            lineHeight: 1.75, maxWidth: 380, marginBottom: 48,
+          }}>
+            Unite with a network of changemakers. AI-driven coordination ensures the right volunteer reaches every community need, instantly.
+          </p>
+
+          {/* Feature cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 14, maxWidth: 380 }}>
+            {featureCards.map(c => <FeatureCard key={c.title} {...c} />)}
+          </div>
+
+          {/* Stat strip */}
+          <div style={{
+            display: 'flex', gap: 32, marginTop: 48,
+            borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 28,
+          }}>
+            {[
+              { val: '12', label: 'Cities covered' },
+              { val: '924', label: 'Issues resolved' },
+              { val: '100%', label: 'Free for NGOs' },
+            ].map(s => (
+              <div key={s.label}>
+                <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 500, color: '#fff', margin: '0 0 4px' }}>
+                  {s.val}
+                </p>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', margin: 0 }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Phone modal */}
+      <PhoneModal isOpen={showPhoneModal} onSave={handlePhoneSave} onSkip={handlePhoneSkip} />
     </div>
   );
 }
