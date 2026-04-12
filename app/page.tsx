@@ -857,7 +857,7 @@ function CTASection() {
 // ─── Footer ──────────────────────────────────────────────────────────────────
 function FooterSection() {
   const a = (text: string) => (
-    <a style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: TXT, textDecoration: 'none', display: 'block', marginBottom: 10, transition: 'color 0.15s', cursor: 'pointer' }}
+    <a key={text} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: TXT, textDecoration: 'none', display: 'block', marginBottom: 10, transition: 'color 0.15s', cursor: 'pointer' }}
       href="#"
       onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
       onMouseLeave={e => (e.currentTarget.style.color = TXT)}>{text}</a>
