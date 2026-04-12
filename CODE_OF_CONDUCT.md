@@ -1,4 +1,10 @@
+<div align="center">
+<img src="public/VolunteerIQ-icon.png" alt="VolunteerIQ" width="60" />
+
+</div>
+
 # Code of Conduct
+
 
 ## Our Pledge
 

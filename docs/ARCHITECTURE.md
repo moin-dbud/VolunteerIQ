@@ -1,4 +1,9 @@
+<div align="center">
+<img src="../public/VolunteerIQ-icon.png" alt="VolunteerIQ" width="60" />
+</div>
+
 # VolunteerIQ — System Architecture
+
 
 > **Google Solution Challenge 2026** | Team DeepCraft
 

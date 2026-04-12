@@ -9,8 +9,9 @@ export const metadata: Metadata = {
     'AI-powered volunteer coordination platform for NGOs. Real-time issue triage, volunteer matching, and impact visibility.',
   keywords: 'NGO, volunteer, coordination, AI, community, emergency response',
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/VolunteerIQ-icon.png',
   },
 };
 

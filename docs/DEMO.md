@@ -1,4 +1,9 @@
+<div align="center">
+<img src="../public/VolunteerIQ-icon.png" alt="VolunteerIQ" width="60" />
+</div>
+
 # VolunteerIQ — Demo Guide
+
 
 A complete walkthrough for judges, evaluators, and first-time users of the VolunteerIQ platform.
 

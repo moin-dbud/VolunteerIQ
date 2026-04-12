@@ -1,6 +1,11 @@
+<div align="center">
+<img src="../public/VolunteerIQ-icon.png" alt="VolunteerIQ" width="60" />
+</div>
+
 # VolunteerIQ — API Documentation
 
-All API routes are **Next.js Route Handlers** located in `client/app/api/`. They run as serverless functions on Vercel.
+All API routes are **Next.js Route Handlers** located in `app/api/`. They run as serverless functions on Vercel.
+
 
 **Base URL:** `https://your-deployment.vercel.app` (or `http://localhost:3000` locally)
 

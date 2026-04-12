@@ -1,4 +1,10 @@
+<div align="center">
+<img src="public/VolunteerIQ-icon.png" alt="VolunteerIQ" width="60" />
+
+</div>
+
 # Changelog
+
 
 All notable changes to **VolunteerIQ** are documented in this file.
 

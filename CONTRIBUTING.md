@@ -1,4 +1,8 @@
+<div align="center">
+<img src="public/VolunteerIQ-icon.png" alt="VolunteerIQ" width="60" />
+
 # Contributing to VolunteerIQ
+
 
 Thank you for your interest in contributing to **VolunteerIQ**! This project is part of the Google Solution Challenge 2026 and is built to help NGOs respond faster to community crises. Every contribution — no matter how small — makes a real-world difference.
 

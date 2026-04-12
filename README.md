@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="client/public/logo.svg" alt="VolunteerIQ Logo" width="80" />
+<img src="public/VolunteerIQ-icon.png" alt="VolunteerIQ Logo" width="80" />
 
 # VolunteerIQ
 
@@ -79,44 +79,47 @@ The result: **faster community response, zero-waste volunteer deployment, and me
 ## 🗂️ Project Structure
 
 ```
-volunteeriq/
-├── client/                      # Next.js application
-│   ├── app/
-│   │   ├── page.tsx             # Landing page (3D hero + sections)
-│   │   ├── layout.tsx           # Root layout + providers
-│   │   ├── login/               # Login page
-│   │   ├── signup/              # Signup page
-│   │   ├── dashboard/           # Coordinator dashboard
-│   │   ├── report/              # Report Issue form
-│   │   ├── volunteer/           # Volunteer portal
-│   │   ├── ai-insights/         # Gemini AI insights page
-│   │   ├── map/                 # Interactive incident map
-│   │   ├── settings/            # Role-based settings
-│   │   └── api/
-│   │       ├── triage/          # POST — AI issue triage
-│   │       ├── insights/        # POST — AI volunteer matching
-│   │       ├── dispatch-volunteer/  # POST — Send WhatsApp dispatch
-│   │       ├── dispatch-response/   # POST — Handle ACCEPT/DECLINE
-│   │       └── notify-volunteers/   # POST — Broadcast new issue
-│   ├── components/
-│   │   ├── landing/             # Landing page sections (3D, features, etc.)
-│   │   ├── AppShell.tsx         # Sidebar + Navbar wrapper
-│   │   ├── Sidebar.tsx          # Navigation sidebar
-│   │   ├── Navbar.tsx           # Top navigation bar
-│   │   ├── LeafletMapComponent.tsx  # Map implementation
-│   │   ├── IssueDetailModal.tsx # Issue detail + assignment modal
-│   │   ├── BroadcastModal.tsx   # Urgent broadcast modal
-│   │   └── PhoneModal.tsx       # WhatsApp dispatch modal
-│   ├── lib/
-│   │   ├── firebase.ts          # Firebase client SDK init
-│   │   ├── firebase-admin.ts    # Firebase Admin SDK init
-│   │   ├── gemini.ts            # Gemini client + key rotation
-│   │   ├── auth-context.tsx     # React Auth context provider
-│   │   ├── toast-context.tsx    # Toast notification context
-│   │   ├── whatsapp.ts          # wa.me link builder utility
-│   │   └── types.ts             # Shared TypeScript types + constants
-│   ├── middleware.ts            # Route protection + role-based redirects
-│   └── .env.local.example      # Environment variable template
+volunteeriq/                     # Repo root (this is the Next.js app)
+├── app/
+│   ├── page.tsx                 # Landing page (3D hero + sections)
+│   ├── layout.tsx               # Root layout + providers
+│   ├── login/                   # Login page
+│   ├── signup/                  # Signup page
+│   ├── dashboard/               # Coordinator dashboard
+│   ├── report/                  # Report Issue form
+│   ├── volunteer/               # Volunteer portal
+│   ├── ai-insights/             # Gemini AI insights page
+│   ├── map/                     # Interactive incident map
+│   ├── settings/                # Role-based settings
+│   └── api/
+│       ├── triage/              # POST — AI issue triage
+│       ├── insights/            # POST — AI volunteer matching
+│       ├── dispatch-volunteer/  # POST — Send WhatsApp dispatch
+│       ├── dispatch-response/   # POST — Handle ACCEPT/DECLINE
+│       └── notify-volunteers/   # POST — Broadcast new issue
+├── components/
+│   ├── landing/                 # Landing page sections (3D, features, etc.)
+│   ├── AppShell.tsx             # Sidebar + Navbar wrapper
+│   ├── Sidebar.tsx              # Navigation sidebar
+│   ├── Navbar.tsx               # Top navigation bar
+│   ├── LeafletMapComponent.tsx  # Map implementation
+│   ├── IssueDetailModal.tsx     # Issue detail + assignment modal
+│   ├── BroadcastModal.tsx       # Urgent broadcast modal
+│   └── PhoneModal.tsx           # WhatsApp dispatch modal
+├── lib/
+│   ├── firebase.ts              # Firebase client SDK init
+│   ├── firebase-admin.ts        # Firebase Admin SDK init
+│   ├── gemini.ts                # Gemini client + key rotation
+│   ├── auth-context.tsx         # React Auth context provider
+│   ├── toast-context.tsx        # Toast notification context
+│   ├── whatsapp.ts              # wa.me link builder utility
+│   └── types.ts                 # Shared TypeScript types + constants
+├── public/
+│   ├── VolunteerIQ-icon.png     # App icon / logo
+│   └── favicon.png              # Browser tab favicon
+├── middleware.ts                # Route protection + role-based redirects
+├── .env.local.example           # Environment variable template
+├── .github/                     # GitHub issue & PR templates
 └── docs/                        # Project documentation
 ```
 

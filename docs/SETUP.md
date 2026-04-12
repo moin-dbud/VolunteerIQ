@@ -1,4 +1,9 @@
+<div align="center">
+<img src="../public/VolunteerIQ-icon.png" alt="VolunteerIQ" width="60" />
+</div>
+
 # VolunteerIQ — Local Setup Guide
+
 
 This guide walks you through getting **VolunteerIQ** running locally from scratch, including Firebase project setup, Gemini API configuration, and Vercel deployment.
 
