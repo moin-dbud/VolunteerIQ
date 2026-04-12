@@ -11,9 +11,9 @@ import {
   Github, Twitter, Linkedin, BarChart2, AlertTriangle,
   CheckCircle, MapPin,
 } from 'lucide-react';
+import HeroSection from '@/components/landing/HeroSection';
 
 // ─── Dynamic 3D imports (SSR disabled) ──────────────────────────────────────
-const HeroScene = dynamic(() => import('@/components/landing/HeroScene'), { ssr: false });
 const AIBrainScene = dynamic(() => import('@/components/landing/AIBrainScene'), { ssr: false });
 const NetworkScene = dynamic(() => import('@/components/landing/NetworkScene'), { ssr: false });
 
@@ -61,180 +61,8 @@ function CursorGlow() {
   );
 }
 
-// ─── Landing Navbar ──────────────────────────────────────────────────────────
-function LandingNavbar() {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 80);
-    window.addEventListener('scroll', h, { passive: true });
-    return () => window.removeEventListener('scroll', h);
-  }, []);
-
-  const linkHover = (e: React.MouseEvent<HTMLAnchorElement>, enter: boolean) => {
-    e.currentTarget.style.color = enter ? '#fff' : TXT;
-  };
-
-  return (
-    <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, height: 64,
-      background: scrolled ? 'rgba(10,10,15,0.96)' : 'rgba(10,10,15,0.8)',
-      backdropFilter: 'blur(16px)',
-      borderBottom: '1px solid rgba(255,255,255,0.055)',
-      zIndex: 100, display: 'flex', alignItems: 'center',
-      padding: '0 max(24px, calc((100vw - 1280px) / 2 + 24px))',
-      transition: 'background 0.3s ease',
-    }}>
-      {/* Logo */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <div style={{
-          width: 32, height: 32, borderRadius: 8,
-          background: `linear-gradient(135deg,${P},${S})`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 14, fontWeight: 800, color: '#fff',
-        }}>V</div>
-        <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 18, fontWeight: 700, color: '#fff' }}>
-          VolunteerIQ
-        </span>
-      </div>
-
-      {/* Center nav */}
-      <div style={{ display: 'flex', gap: 32, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
-        {['How It Works', 'Features', 'Impact', 'For NGOs'].map(l => (
-          <a key={l} href="#" style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 14, color: TXT, textDecoration: 'none', transition: 'color 0.15s' }}
-            onMouseEnter={e => linkHover(e, true)} onMouseLeave={e => linkHover(e, false)}>{l}</a>
-        ))}
-      </div>
-
-      {/* Right CTAs */}
-      <div style={{ display: 'flex', gap: 10, marginLeft: 'auto' }}>
-        <Link href="/login">
-          <button style={{
-            height: 36, padding: '0 16px', background: 'transparent',
-            border: `1px solid ${BRD}`, borderRadius: 8, color: TXT,
-            fontFamily: 'DM Sans, sans-serif', fontSize: 14, cursor: 'pointer', transition: 'all 0.15s',
-          }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = P; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = BRD; e.currentTarget.style.color = TXT; }}>
-            Login
-          </button>
-        </Link>
-        <Link href="/signup">
-          <button style={{
-            height: 36, padding: '0 16px',
-            background: `linear-gradient(135deg,${P},${S})`,
-            border: 'none', borderRadius: 8, color: '#fff',
-            fontFamily: 'DM Sans, sans-serif', fontSize: 14, fontWeight: 600, cursor: 'pointer',
-          }}>Get Started</button>
-        </Link>
-      </div>
-    </nav>
-  );
-}
-
-// ─── Section 1: Hero ─────────────────────────────────────────────────────────
-function HeroSection() {
-  return (
-    <section style={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center',
-      paddingTop: 64,
-      background: `
-        radial-gradient(ellipse 60% 80% at 80% 50%, rgba(147,51,234,0.08) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 10% 20%, rgba(192,38,211,0.05) 0%, transparent 60%),
-        ${BG}
-      `,
-      padding: '80px max(24px, calc((100vw - 1280px) / 2 + 24px)) 0',
-    }}>
-      <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
-        width: '100%', minHeight: 'calc(100vh - 80px)', alignItems: 'center',
-      }}>
-        {/* Left: Text */}
-        <motion.div variants={stagger} initial="hidden" animate="show">
-          <motion.p variants={fadeUp} style={{
-            fontSize: 11, fontWeight: 600, letterSpacing: '0.2em',
-            color: MUT, fontFamily: 'DM Sans, sans-serif',
-            marginBottom: 20, textTransform: 'uppercase',
-          }}>AI-Powered NGO Command Center</motion.p>
-
-          <motion.h1 variants={fadeUp} style={{
-            fontFamily: 'Space Grotesk, sans-serif',
-            fontSize: 'clamp(48px, 5.5vw, 72px)',
-            fontWeight: 800, lineHeight: 1.05,
-            color: '#fff', margin: 0,
-          }}>
-            Mobilize the<br />
-            Right People,<br />
-            <span style={{
-              background: `linear-gradient(135deg, ${P}, ${S})`,
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>Right Now.</span>
-          </motion.h1>
-
-          <motion.p variants={fadeUp} style={{
-            fontFamily: 'DM Sans, sans-serif', fontSize: 18,
-            color: TXT, maxWidth: 460, marginTop: 24, lineHeight: 1.65,
-          }}>
-            VolunteerIQ is a smart command center for NGOs. AI categorizes community issues,
-            finds the best-matched volunteers, and coordinates response — all in real time.
-          </motion.p>
-
-          <motion.div variants={fadeUp} style={{ display: 'flex', gap: 16, marginTop: 40, flexWrap: 'wrap' }}>
-            <Link href="/signup">
-              <button style={{
-                height: 52, padding: '0 32px',
-                background: `linear-gradient(135deg,${P},${S})`,
-                border: 'none', borderRadius: 10, color: '#fff',
-                fontFamily: 'Space Grotesk, sans-serif', fontSize: 16, fontWeight: 600,
-                cursor: 'pointer', transition: 'all 0.2s',
-                boxShadow: `0 4px 20px rgba(147,51,234,0.35)`,
-              }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.03)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(147,51,234,0.5)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(147,51,234,0.35)'; }}>
-                Launch Command Center
-              </button>
-            </Link>
-            <button style={{
-              height: 52, padding: '0 24px', background: 'transparent',
-              border: `1px solid ${BRD}`, borderRadius: 10,
-              color: TXT, fontFamily: 'DM Sans, sans-serif', fontSize: 15,
-              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
-              transition: 'all 0.2s',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = P; e.currentTarget.style.color = '#fff'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = BRD; e.currentTarget.style.color = TXT; }}>
-              <PlayCircle size={18} />Watch Demo
-            </button>
-          </motion.div>
-
-          {/* Stats row */}
-          <motion.div variants={fadeUp} style={{ display: 'flex', alignItems: 'center', marginTop: 56, gap: 0 }}>
-            {[
-              { num: '1,400+', label: 'Active Volunteers' },
-              { num: '94%', label: 'AI Accuracy' },
-              { num: '<20min', label: 'Response Time' },
-            ].map((stat, i) => (
-              <div key={stat.num} style={{ display: 'flex', alignItems: 'center' }}>
-                {i > 0 && <div style={{ width: 1, height: 40, background: BRD, margin: '0 36px' }} />}
-                <div>
-                  <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 28, fontWeight: 500, color: P, margin: 0 }}>{stat.num}</p>
-                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 13, color: MUT, margin: '4px 0 0' }}>{stat.label}</p>
-                </div>
-              </div>
-            ))}
-          </motion.div>
-        </motion.div>
-
-        {/* Right: 3D */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.3 }}
-          style={{ height: 620, minHeight: 480 }}>
-          <HeroScene />
-        </motion.div>
-      </div>
-    </section>
-  );
-}
+// ─── Section 1: Hero (imported from components/landing/HeroSection.tsx) ──────
+// HeroSection is imported at the top — it includes its own floating pill navbar.
 
 // ─── Section 2: Problem ──────────────────────────────────────────────────────
 function ProblemSection() {
@@ -940,7 +768,7 @@ export default function LandingPage() {
   return (
     <div style={{ background: BG, minHeight: '100vh', color: '#fff' }}>
       <CursorGlow />
-      <LandingNavbar />
+      {/* LandingNavbar removed — HeroSection embeds its own floating pill navbar */}
       <main>
         <HeroSection />
         <ProblemSection />
