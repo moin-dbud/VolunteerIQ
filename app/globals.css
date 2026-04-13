@@ -485,28 +485,62 @@ body {
 }
 
 /* ============================================================
-   RESPONSIVE MINIMUM WIDTH MESSAGE
+   RESPONSIVE LANDING / AUTH GRID HELPERS
    ============================================================ */
-.min-width-message {
-  display: none;
+
+/* 3-col grid → 1-col on mobile */
+.landing-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 767px) {
+  .landing-grid-3 {
+    grid-template-columns: 1fr;
+  }
 }
 
-@media (max-width: 1279px) {
-  .min-width-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    text-align: center;
-    padding: 32px;
-    background: var(--bg-base);
-    color: var(--text-secondary);
-    font-family: 'DM Sans', sans-serif;
+/* 2-col grid → 1-col on mobile */
+.landing-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (max-width: 767px) {
+  .landing-grid-2 {
+    grid-template-columns: 1fr;
   }
+}
 
-  .app-content {
-    display: none;
+/* Auth page two-panel layout → stack on mobile */
+.auth-layout {
+  display: flex;
+  min-height: 100vh;
+}
+.auth-brand-panel {
+  width: 52%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.auth-form-panel {
+  width: 48%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 767px) {
+  .auth-layout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .auth-brand-panel {
+    display: none; /* Hide brand panel on mobile — just show the form */
+  }
+  .auth-form-panel {
+    width: 100%;
+    padding: 80px 20px 40px !important;
+    align-items: flex-start;
   }
 }
 

@@ -221,237 +221,268 @@ export default function SignupPage() {
   ];
 
   return (
-    <div style={{
-      minHeight: '100vh', display: 'flex',
-      background: '#080808',
-      backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)',
-      backgroundSize: '32px 32px',
-      backgroundAttachment: 'fixed',
-      fontFamily: "'Space Grotesk', sans-serif",
-      position: 'relative',
-    }}>
-      {/* Diamond decorators */}
-      {DIAMONDS.map((d, i) => <Diamond key={i} d={d} />)}
+    <>
+      <style>{`
+        .signup-outer {
+          min-height: 100vh;
+          display: flex;
+          background: #080808;
+          background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+          background-size: 32px 32px;
+          background-attachment: fixed;
+          font-family: 'Space Grotesk', sans-serif;
+          position: relative;
+        }
+        .signup-form-panel {
+          width: 52%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 120px 40px 80px 80px;
+        }
+        .signup-brand-panel {
+          width: 48%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 120px 80px 80px 40px;
+          position: relative;
+        }
+        .signup-form-card {
+          width: 100%;
+          max-width: 460px;
+        }
+        @media (max-width: 767px) {
+          .signup-brand-panel { display: none; }
+          .signup-form-panel {
+            width: 100%;
+            padding: 90px 20px 40px !important;
+            align-items: flex-start;
+          }
+          .signup-form-card { max-width: 100%; }
+        }
+      `}</style>
 
-      {/* Floating pill navbar */}
-      <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 100 }}>
-        <Link href="/" style={{ textDecoration: 'none' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 10,
-            background: 'rgba(8,8,8,0.75)', backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: 999, padding: '10px 20px',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-          }}>
-            <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>✦</span>
-            <span style={{ color: '#fff', fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>
-              VolunteerIQ
-            </span>
-          </div>
-        </Link>
-      </div>
+      <div className="signup-outer">
+        {/* Diamond decorators */}
+        {DIAMONDS.map((d, i) => <Diamond key={i} d={d} />)}
 
-      {/* Left: form panel */}
-      <motion.div
-        initial={{ opacity: 0, x: -30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          width: '52%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: '120px 40px 80px 80px',
-        }}
-      >
-        <div style={{
-          width: '100%', maxWidth: 460,
-          background: 'rgba(255,255,255,0.03)',
-          border: '1px solid rgba(255,255,255,0.09)',
-          borderRadius: 20, padding: '40px',
-          backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)',
-        }}>
-          {/* Header */}
-          <div style={{ marginBottom: 28 }}>
-            <h2 style={{ fontSize: 26, fontWeight: 700, color: '#fff', margin: '0 0 8px' }}>
-              Create your account
-            </h2>
-            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-              Join the VolunteerIQ command center in under a minute.
+        {/* Floating pill navbar */}
+        <div style={{ position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 100 }}>
+          <Link href="/" style={{ textDecoration: 'none' }}>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              background: 'rgba(8,8,8,0.75)', backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 999, padding: '10px 20px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+            }}>
+              <span style={{ color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>✦</span>
+              <span style={{ color: '#fff', fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>
+                VolunteerIQ
+              </span>
+            </div>
+          </Link>
+        </div>
+
+        {/* Left: form panel */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="signup-form-panel"
+        >
+          <div
+            className="signup-form-card"
+            style={{
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.09)',
+              borderRadius: 20, padding: '40px',
+              backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+              boxShadow: '0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)',
+            }}
+          >
+            {/* Header */}
+            <div style={{ marginBottom: 28 }}>
+              <h2 style={{ fontSize: 26, fontWeight: 700, color: '#fff', margin: '0 0 8px' }}>
+                Create your account
+              </h2>
+              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+                Join the VolunteerIQ command center in under a minute.
+              </p>
+            </div>
+
+            {/* Form error */}
+            {errors.form && (
+              <div style={{
+                background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)',
+                borderRadius: 10, padding: '12px 14px',
+                fontSize: 13, color: '#ef4444', marginBottom: 20,
+              }}>
+                {errors.form}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+              {/* Full name */}
+              <div>
+                <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
+                  FULL NAME
+                </p>
+                <PBInput type="text" placeholder="Enter your full name" value={name} onChange={setName} icon={User} error={errors.name} />
+              </div>
+
+              {/* Email */}
+              <div>
+                <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
+                  EMAIL ADDRESS
+                </p>
+                <PBInput type="email" placeholder="name@example.com" value={email} onChange={setEmail} icon={Mail} error={errors.email} />
+              </div>
+
+              {/* Role */}
+              <div>
+                <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
+                  PRIMARY ROLE
+                </p>
+                <PBSelect
+                  value={role} onChange={setRole}
+                  placeholder="Select your role"
+                  options={[
+                    { value: 'coordinator', label: 'NGO Coordinator' },
+                    { value: 'volunteer',   label: 'Volunteer' },
+                  ]}
+                  error={errors.role}
+                />
+              </div>
+
+              {/* Password */}
+              <div>
+                <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
+                  PASSWORD
+                </p>
+                <PBInput
+                  type={showPw ? 'text' : 'password'} placeholder="Create a strong password"
+                  value={password} onChange={setPassword} icon={Lock} error={errors.password}
+                  rightSlot={
+                    <button type="button" onClick={() => setShowPw(!showPw)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer',
+                        color: 'rgba(255,255,255,0.3)', display: 'flex', padding: 0 }}>
+                      {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
+                  }
+                />
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  marginTop: 4, padding: '13px',
+                  borderRadius: 10,
+                  border: '1px solid rgba(255,255,255,0.18)',
+                  background: loading ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.07)',
+                  color: loading ? 'rgba(255,255,255,0.4)' : '#fff',
+                  fontSize: 15, fontWeight: 600,
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={e => { if (!loading) { (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.1)'; (e.target as HTMLElement).style.borderColor = 'rgba(255,255,255,0.28)'; } }}
+                onMouseLeave={e => { if (!loading) { (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.07)'; (e.target as HTMLElement).style.borderColor = 'rgba(255,255,255,0.18)'; } }}
+              >
+                {loading ? 'Creating account…' : <>Create Account <ArrowRight size={15} /></>}
+              </button>
+            </form>
+
+            <p style={{ textAlign: 'center', fontSize: 13, color: 'rgba(255,255,255,0.35)', marginTop: 24 }}>
+              Already have an account?{' '}
+              <Link href="/login" style={{ color: 'rgba(255,255,255,0.75)', fontWeight: 600, textDecoration: 'none' }}>
+                Sign In
+              </Link>
+            </p>
+            <p style={{
+              textAlign: 'center', fontSize: 10, color: 'rgba(255,255,255,0.18)',
+              marginTop: 16, letterSpacing: '0.05em', textTransform: 'uppercase',
+            }}>
+              By joining, you agree to our Terms &amp; Privacy Policy
             </p>
           </div>
+        </motion.div>
 
-          {/* Form error */}
-          {errors.form && (
+        {/* Right: brand panel — hidden on mobile */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          className="signup-brand-panel"
+        >
+          {/* Glow */}
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: 'radial-gradient(ellipse 70% 60% at 70% 50%, rgba(40,40,40,0.8) 0%, transparent 70%)',
+          }} />
+
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            {/* Badge */}
             <div style={{
-              background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)',
-              borderRadius: 10, padding: '12px 14px',
-              fontSize: 13, color: '#ef4444', marginBottom: 20,
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.03)',
+              borderRadius: 999, padding: '6px 16px', marginBottom: 32,
             }}>
-              {errors.form}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-            {/* Full name */}
-            <div>
-              <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
-                FULL NAME
-              </p>
-              <PBInput type="text" placeholder="Enter your full name" value={name} onChange={setName} icon={User} error={errors.name} />
+              <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11 }}>✦</span>
+              <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                Join the Network
+              </span>
             </div>
 
-            {/* Email */}
-            <div>
-              <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
-                EMAIL ADDRESS
-              </p>
-              <PBInput type="email" placeholder="name@example.com" value={email} onChange={setEmail} icon={Mail} error={errors.email} />
+            <h1 style={{
+              fontSize: 'clamp(36px, 3.5vw, 48px)', fontWeight: 700,
+              color: '#fff', lineHeight: 1.15, margin: '0 0 20px',
+            }}>
+              Join the Pulse<br />of Community Impact.
+            </h1>
+
+            <p style={{
+              fontSize: 16, color: 'rgba(255,255,255,0.45)',
+              lineHeight: 1.75, maxWidth: 380, marginBottom: 48,
+            }}>
+              Unite with a network of changemakers. AI-driven coordination ensures the right volunteer reaches every community need, instantly.
+            </p>
+
+            {/* Feature cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 14, maxWidth: 380 }}>
+              {featureCards.map(c => <FeatureCard key={c.title} {...c} />)}
             </div>
 
-            {/* Role */}
-            <div>
-              <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
-                PRIMARY ROLE
-              </p>
-              <PBSelect
-                value={role} onChange={setRole}
-                placeholder="Select your role"
-                options={[
-                  { value: 'coordinator', label: 'NGO Coordinator' },
-                  { value: 'volunteer',   label: 'Volunteer' },
-                ]}
-                error={errors.role}
-              />
+            {/* Stat strip */}
+            <div style={{
+              display: 'flex', gap: 32, marginTop: 48,
+              borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 28,
+            }}>
+              {[
+                { val: '12', label: 'Cities covered' },
+                { val: '924', label: 'Issues resolved' },
+                { val: '100%', label: 'Free for NGOs' },
+              ].map(s => (
+                <div key={s.label}>
+                  <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 500, color: '#fff', margin: '0 0 4px' }}>
+                    {s.val}
+                  </p>
+                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', margin: 0 }}>{s.label}</p>
+                </div>
+              ))}
             </div>
-
-            {/* Password */}
-            <div>
-              <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8, fontWeight: 600 }}>
-                PASSWORD
-              </p>
-              <PBInput
-                type={showPw ? 'text' : 'password'} placeholder="Create a strong password"
-                value={password} onChange={setPassword} icon={Lock} error={errors.password}
-                rightSlot={
-                  <button type="button" onClick={() => setShowPw(!showPw)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer',
-                      color: 'rgba(255,255,255,0.3)', display: 'flex', padding: 0 }}>
-                    {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
-                  </button>
-                }
-              />
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                marginTop: 4, padding: '13px',
-                borderRadius: 10,
-                border: '1px solid rgba(255,255,255,0.18)',
-                background: loading ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.07)',
-                color: loading ? 'rgba(255,255,255,0.4)' : '#fff',
-                fontSize: 15, fontWeight: 600,
-                fontFamily: "'Space Grotesk', sans-serif",
-                cursor: loading ? 'not-allowed' : 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                transition: 'all 0.2s ease',
-              }}
-              onMouseEnter={e => { if (!loading) { (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.1)'; (e.target as HTMLElement).style.borderColor = 'rgba(255,255,255,0.28)'; } }}
-              onMouseLeave={e => { if (!loading) { (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.07)'; (e.target as HTMLElement).style.borderColor = 'rgba(255,255,255,0.18)'; } }}
-            >
-              {loading ? 'Creating account…' : <>Create Account <ArrowRight size={15} /></>}
-            </button>
-          </form>
-
-          <p style={{ textAlign: 'center', fontSize: 13, color: 'rgba(255,255,255,0.35)', marginTop: 24 }}>
-            Already have an account?{' '}
-            <Link href="/login" style={{ color: 'rgba(255,255,255,0.75)', fontWeight: 600, textDecoration: 'none' }}>
-              Sign In
-            </Link>
-          </p>
-          <p style={{
-            textAlign: 'center', fontSize: 10, color: 'rgba(255,255,255,0.18)',
-            marginTop: 16, letterSpacing: '0.05em', textTransform: 'uppercase',
-          }}>
-            By joining, you agree to our Terms &amp; Privacy Policy
-          </p>
-        </div>
-      </motion.div>
-
-      {/* Right: brand panel */}
-      <motion.div
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-        style={{
-          width: '48%', display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          padding: '120px 80px 80px 40px', position: 'relative',
-        }}
-      >
-        {/* Glow */}
-        <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse 70% 60% at 70% 50%, rgba(40,40,40,0.8) 0%, transparent 70%)',
-        }} />
-
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          {/* Badge */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            border: '1px solid rgba(255,255,255,0.1)',
-            background: 'rgba(255,255,255,0.03)',
-            borderRadius: 999, padding: '6px 16px', marginBottom: 32,
-          }}>
-            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11 }}>✦</span>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-              Join the Network
-            </span>
           </div>
+        </motion.div>
 
-          <h1 style={{
-            fontSize: 'clamp(36px, 3.5vw, 48px)', fontWeight: 700,
-            color: '#fff', lineHeight: 1.15, margin: '0 0 20px',
-          }}>
-            Join the Pulse<br />of Community Impact.
-          </h1>
-
-          <p style={{
-            fontSize: 16, color: 'rgba(255,255,255,0.45)',
-            lineHeight: 1.75, maxWidth: 380, marginBottom: 48,
-          }}>
-            Unite with a network of changemakers. AI-driven coordination ensures the right volunteer reaches every community need, instantly.
-          </p>
-
-          {/* Feature cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 14, maxWidth: 380 }}>
-            {featureCards.map(c => <FeatureCard key={c.title} {...c} />)}
-          </div>
-
-          {/* Stat strip */}
-          <div style={{
-            display: 'flex', gap: 32, marginTop: 48,
-            borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 28,
-          }}>
-            {[
-              { val: '12', label: 'Cities covered' },
-              { val: '924', label: 'Issues resolved' },
-              { val: '100%', label: 'Free for NGOs' },
-            ].map(s => (
-              <div key={s.label}>
-                <p style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 500, color: '#fff', margin: '0 0 4px' }}>
-                  {s.val}
-                </p>
-                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', margin: 0 }}>{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Phone modal */}
-      <PhoneModal isOpen={showPhoneModal} onSave={handlePhoneSave} onSkip={handlePhoneSkip} />
-    </div>
+        {/* Phone modal */}
+        <PhoneModal isOpen={showPhoneModal} onSave={handlePhoneSave} onSkip={handlePhoneSkip} />
+      </div>
+    </>
   );
 }

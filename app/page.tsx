@@ -134,7 +134,6 @@ function Section({
   return (
     <section style={{
       position: 'relative',
-      padding: '80px 40px',
       overflow: 'hidden',
       ...style,
     }}>
@@ -144,10 +143,13 @@ function Section({
         background: glowMap[glowPosition],
         pointerEvents: 'none', zIndex: 0,
       }} />
-      <div style={{
-        position: 'relative', zIndex: 2,
-        maxWidth: 1100, margin: '0 auto',
-      }}>
+      <div
+        className="landing-section-inner"
+        style={{
+          position: 'relative', zIndex: 2,
+          maxWidth: 1100, margin: '0 auto',
+        }}
+      >
         {children}
       </div>
     </section>
@@ -257,7 +259,8 @@ function ProblemSection() {
         <motion.div
           variants={staggerParent} initial="hidden"
           whileInView="show" viewport={{ once: true, margin: '-60px' }}
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}
+          className="lp-grid-3"
+          style={{}}
         >
           {cards.map((c) => (
             <motion.div key={c.num} variants={fadeUp}>
@@ -695,7 +698,8 @@ function HowItWorksSection() {
           <motion.div
             variants={staggerParent} initial="hidden"
             whileInView="show" viewport={{ once: true, margin: '-60px' }}
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}
+            className="lp-grid-3"
+            style={{}}
           >
             {steps.map(step => (
               <motion.div key={step.n} variants={fadeUp}>
@@ -850,10 +854,7 @@ function FeaturesSection() {
         <Diamonds items={diamonds} />
 
         {/* Sub-section A: AI Matching */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: '1fr 1fr',
-          gap: 80, alignItems: 'center', marginBottom: 120,
-        }}>
+        <div className="lp-grid-2" style={{ marginBottom: 120 }}>
           <motion.div
             initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.7, ease }}
@@ -888,10 +889,7 @@ function FeaturesSection() {
         </div>
 
         {/* Sub-section B: Real-time */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: '1fr 1fr',
-          gap: 80, alignItems: 'center',
-        }}>
+        <div className="lp-grid-2" style={{ marginBottom: 0 }}>
           <motion.div
             initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.7, ease }}
@@ -998,7 +996,8 @@ function StatsSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }} transition={{ duration: 0.7, ease }}
-          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: 0 }}
+          className="lp-stats-row"
+          style={{}}
         >
           {stats.map((s, i) => (
             <div key={s.label} style={{ display: 'flex', alignItems: 'center' }}>
@@ -1116,6 +1115,7 @@ function TestimonialsSection() {
                 key={i}
                 initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.1, ease }}
+                className="lp-testimonial-card"
                 style={{ scrollSnapAlign: 'start', flexShrink: 0, width: 420 }}
               >
                 <Card style={{ height: '100%' }}>
@@ -1185,7 +1185,7 @@ function CTASection() {
   ];
 
   return (
-    <section style={{ position: 'relative', padding: '160px 40px', overflow: 'hidden' }}>
+    <section className="lp-cta-section" style={{ position: 'relative', padding: '160px 40px', overflow: 'hidden' }}>
         <div style={{
           position: 'absolute', inset: 0,
           background: 'radial-gradient(ellipse 80% 80% at 50% 50%, rgba(40,40,40,0.9) 0%, transparent 70%)',
@@ -1321,14 +1321,17 @@ function FooterSection() {
   ];
 
   return (
-    <footer style={{
-      background: '#050505',
-      borderTop: '1px solid rgba(255,255,255,0.06)',
-      padding: '60px max(40px, calc((100vw - 1180px) / 2)) 32px',
-    }}>
+    <footer
+      className="lp-footer"
+      style={{
+        background: '#050505',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        padding: '60px max(40px, calc((100vw - 1180px) / 2)) 32px',
+      }}
+    >
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         {/* 4-column grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 40 }}>
+        <div className="lp-footer-grid">
           {/* Brand column */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
@@ -1415,6 +1418,63 @@ export default function LandingPage() {
       minHeight: '100vh',
       color: '#fff',
     }}>
+      {/* ─── Responsive styles for landing page ─────────────── */}
+      <style>{`
+        /* Section padding */
+        .landing-section-inner { padding: 80px 40px; }
+
+        /* 3-column grids (problem cards, how-it-works steps) */
+        .lp-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+        /* 2-column grids (features, footer body) */
+        .lp-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+        /* Footer columns */
+        .lp-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 40px; }
+
+        /* Stats row */
+        .lp-stats-row { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 0; }
+
+        /* Sticky navbar links */
+        .lp-nav-links { display: flex; gap: 28px; align-items: center; }
+
+        @media (max-width: 767px) {
+          .landing-section-inner { padding: 56px 20px; }
+
+          /* Cards stack to 1 column */
+          .lp-grid-3 { grid-template-columns: 1fr; gap: 14px; }
+
+          /* Feature rows stack */
+          .lp-grid-2 { grid-template-columns: 1fr; gap: 40px; margin-bottom: 60px !important; }
+
+          /* Footer collapses to 2 col */
+          .lp-footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+
+          /* Stats wrap to 2x2 */
+          .lp-stats-row { gap: 0; }
+
+          /* Hide nav links, keep only logo */
+          .lp-nav-links { display: none; }
+
+          /* Testimonial card slightly narrower */
+          .lp-testimonial-card { width: calc(100vw - 48px) !important; }
+
+          /* Before→After strip */
+          .lp-before-after { flex-direction: column; gap: 12px !important; }
+          .lp-before-after > div { display: none; } /* hide the lines */
+
+          /* CTA section padding */
+          .lp-cta-section { padding: 80px 24px !important; }
+
+          /* Footer padding */
+          .lp-footer { padding: 40px 20px 24px !important; }
+        }
+
+        @media (max-width: 480px) {
+          .lp-footer-grid { grid-template-columns: 1fr; }
+        }
+      `}</style>
+
       {/* Global overlays */}
       <CursorGlow />
       <ScrollProgress />

@@ -117,7 +117,7 @@ function StickyNavbar() {
             VolunteerIQ
           </span>
         </Link>
-        <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+        <div className="lp-nav-links" style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
           {navLinks.map(link => (
             <NavLink key={link} href="#" label={link} />
           ))}
@@ -174,7 +174,7 @@ function PillNavbar() {
       </Link>
 
       {/* Nav links */}
-      <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+      <div className="lp-nav-links" style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
         {navLinks.map((link) => (
           <NavLink key={link} href="#" label={link} />
         ))}
