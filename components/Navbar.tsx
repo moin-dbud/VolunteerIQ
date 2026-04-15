@@ -12,9 +12,10 @@ const navLinks = [
   { href: '/ai-insights', label: 'AI Insights' },
 ];
 
-export default function Navbar() {
+export default function Navbar({ onLogout }: { onLogout?: () => void }) {
   const pathname = usePathname();
   const { userProfile, logOut } = useAuth();
+  const handleSignOut = onLogout ?? logOut;
   const isCoordinator = userProfile?.role === 'coordinator';
 
   const initials = userProfile?.name
@@ -148,7 +149,7 @@ export default function Navbar() {
 
         {/* Avatar */}
         <button
-          onClick={logOut}
+          onClick={handleSignOut}
           title="Click to sign out"
           style={{
             width: '36px',
