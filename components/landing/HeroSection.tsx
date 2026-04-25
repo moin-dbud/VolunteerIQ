@@ -331,7 +331,7 @@ export default function HeroSection() {
 
             {/* Tertiary CTA */}
             <Link
-              href="/signup"
+              href="/demo"
               onMouseEnter={() => setBtn3H(true)}
               onMouseLeave={() => setBtn3H(false)}
               style={{
@@ -345,7 +345,7 @@ export default function HeroSection() {
                 transition: 'all 0.2s cubic-bezier(0.34,1.56,0.64,1)',
               }}
             >
-              Get Started Free
+              Watch Demo
             </Link>
           </motion.div>
 

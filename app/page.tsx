@@ -1209,7 +1209,7 @@ function CTASection() {
             </Link>
             {/* Secondary: outline */}
             <Link
-              href="#demo"
+              href="/demo"
               onMouseEnter={() => setB2(true)}
               onMouseLeave={() => setB2(false)}
               style={{

@@ -6,7 +6,7 @@ const COORDINATOR_ONLY = ['/dashboard', '/ai-insights', '/map', '/settings/coord
 // Routes only volunteers can access
 const VOLUNTEER_ONLY = ['/settings/volunteer'];
 // Public routes — no auth required
-const PUBLIC = ['/login', '/signup'];
+const PUBLIC = ['/login', '/signup', '/demo'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
