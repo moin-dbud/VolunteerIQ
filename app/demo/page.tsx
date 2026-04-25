@@ -373,7 +373,7 @@ export default function DemoPage() {
 
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <a
-                href="https://github.com/volunteeriq"
+                href="https://github.com/moin-dbud/VolunteerIQ"
                 target="_blank" rel="noopener noreferrer"
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8,
